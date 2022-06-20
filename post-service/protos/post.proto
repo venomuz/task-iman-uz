@@ -5,6 +5,7 @@ service UserService{
   rpc GetList(LimitRequest) returns (LimitResponse);
   rpc GetById(IdRequest) returns (Post);
   rpc DeleteById(IdRequest) returns (Ok);
+  rpc UpdateById(Post) returns(Ok);
 }
 
 message Post{

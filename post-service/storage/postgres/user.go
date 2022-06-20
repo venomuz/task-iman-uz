@@ -52,3 +52,20 @@ func (r *postRepo) GetById(UserId int64) (*pb.Post, error) {
 	}
 	return &post, nil
 }
+func (r *postRepo) DeleteById(UserId int64) (*pb.Ok, error) {
+	DeleteQuery := `DELETE FROM posts WHERE user_id = $1`
+	_, err := r.db.Exec(DeleteQuery, UserId)
+	if err != nil {
+		return nil, err
+	}
+	return &pb.Ok{Status: true}, nil
+}
+
+func (r *postRepo) UpdateById(post *pb.Post) (*pb.Ok, error) {
+	UpdateQuery := `UPDATE posts SET title = $1, body = $2 WHERE user_id = $3`
+	_, err := r.db.Exec(UpdateQuery, post.Title, post.Body, post.UserId)
+	if err != nil {
+		return nil, err
+	}
+	return &pb.Ok{Status: true}, nil
+}

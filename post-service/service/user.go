@@ -26,21 +26,40 @@ func NewPostService(db *sqlx.DB, log l.Logger) *PostService {
 }
 
 func (s *PostService) GetList(ctx context.Context, req *pb.LimitRequest) (*pb.LimitResponse, error) {
-	posts, err := s.storage.Post().GetList(req.Page, req.Limit)
+	limitResponse, err := s.storage.Post().GetList(req.Page, req.Limit)
 	if err != nil {
 		fmt.Println(err)
-		s.logger.Error("Error while getting post info", l.Error(err))
-		return nil, status.Error(codes.Internal, "Error insert post")
+		s.logger.Error("Error while Getting list post from Db", l.Error(err))
+		return nil, status.Error(codes.Internal, "Error getting list post")
 	}
-	return posts, nil
+	return limitResponse, nil
 }
 
 func (s *PostService) GetById(ctx context.Context, req *pb.IdRequest) (*pb.Post, error) {
 	post, err := s.storage.Post().GetById(req.UserId)
 	if err != nil {
 		fmt.Println(err)
-		s.logger.Error("Error while getting post info", l.Error(err))
-		return nil, status.Error(codes.Internal, "Error insert post")
+		s.logger.Error("Error while getting post by id from db", l.Error(err))
+		return nil, status.Error(codes.Internal, "Error getting post")
 	}
 	return post, nil
+}
+func (s *PostService) DeleteById(ctx context.Context, req *pb.IdRequest) (*pb.Ok, error) {
+	stat, err := s.storage.Post().DeleteById(req.UserId)
+	if err != nil {
+		fmt.Println(err)
+		s.logger.Error("Error while deleting post by id from db", l.Error(err))
+		return nil, status.Error(codes.Internal, "Error deleting post")
+	}
+	return stat, nil
+}
+
+func (s *PostService) UpdateById(ctx context.Context, post *pb.Post) (*pb.Ok, error) {
+	ok, err := s.storage.Post().UpdateById(post)
+	if err != nil {
+		fmt.Println(err)
+		s.logger.Error("Error while updating post by id from db", l.Error(err))
+		return nil, status.Error(codes.Internal, "Error updating post")
+	}
+	return ok, nil
 }
