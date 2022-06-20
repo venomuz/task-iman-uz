@@ -21,8 +21,8 @@ func (r *postRepo) GetList(page, limit int64) (*pb.LimitResponse, error) {
 		post  pb.Post
 	)
 
-	GetPost := `SELECT id, user_id, title, body FROM posts ORDER BY id OFFSET $1 LIMIT $2;`
-	rows, err := r.db.Query(GetPost, offset, limit)
+	GetPostQuery := `SELECT id, user_id, title, body FROM posts ORDER BY id OFFSET $1 LIMIT $2;`
+	rows, err := r.db.Query(GetPostQuery, offset, limit)
 	if err != nil {
 		return nil, err
 	}
@@ -42,4 +42,13 @@ func (r *postRepo) GetList(page, limit int64) (*pb.LimitResponse, error) {
 	}
 	posts.AllPosts = count
 	return &posts, nil
+}
+func (r *postRepo) GetById(UserId int64) (*pb.Post, error) {
+	post := pb.Post{}
+	GetByIdQuery := `SELECT id, user_id, title, body FROM posts WHERE user_id = $1'`
+	err := r.db.QueryRow(GetByIdQuery, UserId).Scan(&post.Id, &post.UserId, &post.Title, &post.Body)
+	if err != nil {
+		return nil, err
+	}
+	return &post, nil
 }

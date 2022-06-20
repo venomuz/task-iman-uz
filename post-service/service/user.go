@@ -26,11 +26,21 @@ func NewPostService(db *sqlx.DB, log l.Logger) *PostService {
 }
 
 func (s *PostService) GetList(ctx context.Context, req *pb.LimitRequest) (*pb.LimitResponse, error) {
-	users, err := s.storage.Post().GetList(req.Page, req.Limit)
+	posts, err := s.storage.Post().GetList(req.Page, req.Limit)
 	if err != nil {
 		fmt.Println(err)
 		s.logger.Error("Error while getting post info", l.Error(err))
 		return nil, status.Error(codes.Internal, "Error insert post")
 	}
-	return users, nil
+	return posts, nil
+}
+
+func (s *PostService) GetById(ctx context.Context, req *pb.IdRequest) (*pb.Post, error) {
+	post, err := s.storage.Post().GetById(req.UserId)
+	if err != nil {
+		fmt.Println(err)
+		s.logger.Error("Error while getting post info", l.Error(err))
+		return nil, status.Error(codes.Internal, "Error insert post")
+	}
+	return post, nil
 }
