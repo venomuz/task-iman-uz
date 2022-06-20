@@ -1,0 +1,31 @@
+syntax="proto3";
+package post;
+
+service UserService{
+  rpc GetList(LimitRequest) returns (LimitResponse);
+  rpc GetById(IdRequest) returns (Post);
+  rpc DeleteById(IdRequest) returns (Ok);
+  rpc UpdateById(Post) returns(Ok);
+}
+
+message Post{
+  int64 id = 1;
+  int64 user_id = 2;
+  string title = 3;
+  string body = 4;
+}
+
+message LimitRequest{
+  int64 page = 2;
+  int64 limit = 3;
+}
+message LimitResponse{
+  repeated Post posts = 1;
+  int64 all_posts = 2;
+}
+message IdRequest{
+  int64 user_id = 1;
+}
+message Ok{
+  bool status = 1;
+}
