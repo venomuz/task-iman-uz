@@ -6,5 +6,5 @@ import (
 
 //PostStorageI ...
 type PostStorageI interface {
-	Create(*pb.Post) (*pb.Post, error)
+	GetList(page, limit int64) (*pb.LimitResponse, error)
 }

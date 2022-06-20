@@ -2,10 +2,13 @@ package service
 
 import (
 	"context"
+	"fmt"
 	"github.com/jmoiron/sqlx"
 	pb "github.com/venomuz/task-iman-uz/post-service/genproto"
 	l "github.com/venomuz/task-iman-uz/post-service/pkg/logger"
 	"github.com/venomuz/task-iman-uz/post-service/storage"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 //PostService ...
@@ -22,7 +25,12 @@ func NewPostService(db *sqlx.DB, log l.Logger) *PostService {
 	}
 }
 
-func (s *PostService) GetList(ctx context.Context, request *pb.LimitRequest) (*pb.LimitResponse, error) {
-	//TODO implement me
-	panic("implement me")
+func (s *PostService) GetList(ctx context.Context, req *pb.LimitRequest) (*pb.LimitResponse, error) {
+	users, err := s.storage.Post().GetList(req.Page, req.Limit)
+	if err != nil {
+		fmt.Println(err)
+		s.logger.Error("Error while getting post info", l.Error(err))
+		return nil, status.Error(codes.Internal, "Error insert post")
+	}
+	return users, nil
 }
